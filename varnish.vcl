@@ -51,10 +51,23 @@ sub vcl_recv {
          return (pass);
      }
 
-     # TODO: Add rules for static files
+    # parse accept encoding rulesets to normalize0
+    if (req.http.Accept-Encoding) {
+        if (req.http.Accept-Encoding ~ "gzip") {
+            set req.http.Accept-Encoding = "gzip";
+        } elsif (req.http.Accept-Encoding ~ "deflate") {
+            set req.http.Accept-Encoding = "deflate";
+        } else {
+            # unkown algorithm
+            remove req.http.Accept-Encoding;
+        }
+    }
+
+     # Rules for static files
      if (req.url ~ "\.(jpeg|jpg|png|gif|ico|swf|js|css|gz|rar|txt|bzip|pdf)(\?.*|)$") {
         set req.http.staticmarker = "1";
         unset req.http.Cookie;
+
         return (lookup);
     }
 
