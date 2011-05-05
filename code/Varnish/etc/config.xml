@@ -28,6 +28,13 @@
                 <class>Magneto_Varnish_Helper</class>
             </varnish>
         </helpers>
+        <!-- index>
+            <indexer>
+                <varnish_pagecache>
+                    <model>varnish/indexer_pagecache</model>
+                </varnish_pagecache>
+            </indexer>
+        </index -->
         <events>
             <http_response_send_before>
                 <observers>
@@ -49,4 +56,41 @@
             </application_clean_cache>
         </events>
     </global>
+
+    <default>
+        <varnish>
+            <options>
+                <servers>
+                    <server1>magento-community.local</server1>
+                </servers>
+            </options>
+        </varnish>
+    </default>
+
+
+    <adminhtml>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <varnish>
+                            <title>Varnish</title>
+                            <sort_order>10</sort_order>
+                        </varnish>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <varnish>
+                                            <title>Varnish Options</title>
+                                        </varnish>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
 </config>

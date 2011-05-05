@@ -2,11 +2,6 @@
 
 class Magneto_Varnish_Model_Observer {
 
-    public function getCookie()
-    {
-        return Mage::app()->getCookie();
-    }
-
     /**
      * @param $observer Varien_Event_Observer
      */
@@ -14,13 +9,50 @@ class Magneto_Varnish_Model_Observer {
     {
         $event = $observer->getEvent();
         $response = $observer->getResponse();
+        $helper = Mage::helper('varnish/cacheable'); /* @var $helper Magneto_Varnish_Model_Cacheable */
+
+        if( $helper->isNoCacheStable() ){
+            return false;
+        }
+
+        if ($helper->pollVerification()) {
+            $helper->setNoCacheStable();
+            return false;
+        }
+
+        if ($helper->quoteHasItems()) {
+            Mage::log('Items in cart condition');
+            $helper->turnOffVarnishCache();
+            return false;
+        } else {
+            Mage::log('empty cart');
+            $helper->turnOnVarnishCache();
+        }
+
+        if ($helper->isCustomerLoggedIn()) {
+            Mage::log('custommer logged in');
+            $helper->turnOffVarnishCache();
+            return false;
+        } else {
+            Mage::log('customer anonym');
+        }
+
+        Mage::log('Request has cache on');
+
+        $helper->turnOnVarnishCache();
     }
 
+    /**
+     * Listens to application_clean_cache event and gets notified when a product/category/cms 
+     * model is saved.
+     *
+     * @param $observer Mage_Core_Model_Observer
+     */
     public function purgeCache($observer)
     {
         $tags = $observer->getTags();
         $urls = array();
-        // Mage::log("Tags: " . get_class($tags) . ' = ' . var_export($tags, true));
+        Mage::log("Tags: " . get_class($tags) . ' = ' . var_export($tags, true));
         
         // compute the urls for affected entities 
         foreach ((array)$tags as $tag) {
@@ -39,18 +71,38 @@ class Magneto_Varnish_Model_Observer {
                     $category = Mage::getModel('catalog/category')->load($tag_fields[2]);
                     $category_urls = $this->_getUrlsForCategory($category);
                     $urls = array_merge($urls, $category_urls);
+                } elseif ($tag_fields[1]=='page') {
+                    $urls = $this->_getUrlsForCmsPage($tag_fields[2]);
                 }
             }
         }
-        Mage::log("purge all urls: " . var_export($urls, true));
-        // FIXME: Perform the actual purge
+
+        // Transform urls to relative urls
+        $relativeUrls = array();
+        foreach ($urls as $url) {
+            $relativeUrls[] = parse_url($url, PHP_URL_PATH);
+        }
+        // Mage::log("Relative urls: " . var_export($relativeUrls, True));
+        
+        if (!empty($relativeUrls)) {
+            $errors = Mage::helper('varnish')->purge($relativeUrls);
+            if (!empty($errors)) {
+                Mage::getSingleton('adminhtml/session')->addError(
+                    "Some Varnish purges failed: <br/>" . implode("<br/>", $relativeUrls));
+            } else {
+                Mage::getSingleton('adminhtml/session')->addSuccess(
+                    "Purges have been submitted successfully: <br/>" . implode("<br/>", $relativeUrls));
+            }
+        }
+
+        return $this;
     }
 
     /**
      * Returns all the urls related to product
      * @param Mage_Catalog_Model_Product $product
      */
-    private function _getUrlsForProduct($product){
+    protected function _getUrlsForProduct($product){
         $urls = array();
 
         $store_id = $product->getStoreId();
@@ -88,7 +140,7 @@ class Magneto_Varnish_Model_Observer {
     /** 
      * Returns all the urls pointing to the category
      */
-    private function _getUrlsForCategory($category) {
+    protected function _getUrlsForCategory($category) {
         $urls = array();
         $routePath = 'catalog/category/view';
 
@@ -113,44 +165,20 @@ class Magneto_Varnish_Model_Observer {
         }
 
         return $urls;
-    }    
-    
-
-    public function turnOnCache()
-    {
-        $this->getCookie()->delete('nocache');
     }
 
-    public function turnOffCache()
+    /**
+     * Returns all urls related to this cms page
+     */
+    protected function _getUrlsForCmsPage($cmsPageId)
     {
-        $this->getCookie()->set('nocache', 1);
-    }
-
-    public function canCache()
-    {
-        return true;
-    }
-
-    protected function quoteHasItems()
-    {
-        $quote = Mage::getSingleton('checkout/session')->getQuote();
-        if($quote instanceof Mage_Sales_Model_Quote && $quote->hasItems()) {
-            return true;
-        } else {
-            return false;
+        $urls = array();
+        $page = Mage::getModel('cms/page')->load($cmsPageId);
+        if ($page->getId()) {
+            $urls[] = '/' . $page->getIdentifier();
         }
-    }
 
-    public function customerIsLogged()
-    {
-        $customerSession = Mage::getSingleton('customer/session');
-        if ($customerSession instanceof Mage_Customer_Model_Session &&
-            $customerSession->isLoggedIn() ){
-                return true;
-        }
-        else {
-            return false;
-        }
+        return $urls;
     }
 }
 

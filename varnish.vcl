@@ -12,6 +12,8 @@
 
 acl trusted {
     "127.0.0.1";
+    "127.0.1.1";
+    "192.168.56.1";
     # Add other ips that are allowed to purge cache
 }
 
@@ -31,7 +33,9 @@ sub vcl_recv {
         if (!client.ip ~ trusted) {
            error 405 "Not allowed.";
         }
-        return(lookup); # @see vcl_hit
+        purge("req.url ~ " req.url);
+        error 200 "Ok"; #We don't go to backend 
+        #return(lookup); # @see vcl_hit
     }
     
     if (req.request != "GET" &&
@@ -150,6 +154,11 @@ sub vcl_miss {
 # @var beresp   Backend response (contains HTTP headers from backend)
 sub vcl_fetch {
     set req.grace = 30s;
+
+    # Current response should not be cached
+    if(beresp.http.Set-Cookie ~ "nocache=1") {
+        return (deliver);
+    }
 
     # Flag set when we want to delete cache headers received from backend
     if (req.http.magicmarker){
