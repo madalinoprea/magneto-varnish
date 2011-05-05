@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Magneto_Varnish>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Magneto_Varnish>
+    </modules>
+</config> 

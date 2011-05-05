@@ -1,0 +1,5 @@
+# Comments are supported, begin a line with a hash
+code/Varnish                  app/code/community/Magneto/Varnish
+#design/layout/varnish.xml     app/design/frontend/base/default/layout/varnish.xml 
+#design/template/varnish       app/design/frontend/base/default/template/varnish
+Magneto_Varnish.xml           app/etc/modules/Magneto_Varnish.xml 
