@@ -1,4 +1,24 @@
 
 Under Development
 
+================================
+Installation instructions
 
+1. Make sure you have modman installed
+curl http://module-manager.googlecode.com/files/modman-1.1.5 > modman
+chmod +x modman
+sudo mv modman /usr/bin
+
+2. Clone the git repository
+cd [magento root folder]
+modman init
+modman magneto-varnish clone git@github.com:madalinoprea/magneto-varnish.git
+
+3. Flush Magento cache to enable the extension
+
+================================
+Requirements
+
+1. Apache started and listening on port 81 (Varnish configuration is using this port)
+2. Varnish installed and listening on port 80; please use the config from repo 
+3. Varnish server configured on config.xml (planned to be moved in Admin)
