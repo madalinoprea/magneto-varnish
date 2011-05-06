@@ -14,7 +14,7 @@ sudo mv modman /usr/bin
 2. Clone the git repository:
 cd [magento root folder]
 modman init
-modman magneto-varnish clone git@github.com:madalinoprea/magneto-varnish.git
+modman magneto-varnish clone https://github.com/madalinoprea/magneto-varnish.git
 
 3. Flush Magento cache to enable the extension
 
