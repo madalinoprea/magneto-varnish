@@ -53,7 +53,20 @@ class Magneto_Varnish_Model_Observer {
         $tags = $observer->getTags();
         $urls = array();
         Mage::log("Tags: " . get_class($tags) . ' = ' . var_export($tags, true));
-        
+				
+		if($tags == array())
+		{
+            $errors = Mage::helper('varnish')->purgeAll();
+            if (!empty($errors)) {
+                Mage::getSingleton('adminhtml/session')->addError(
+                    "Varnish Purge failed");
+            } else {
+                Mage::getSingleton('adminhtml/session')->addSuccess(
+                    "The Varnish cache storage has been flushed.");
+            }
+			return;
+		}
+		
         // compute the urls for affected entities 
         foreach ((array)$tags as $tag) {
             //catalog_product_100 or catalog_category_186
