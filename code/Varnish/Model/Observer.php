@@ -21,23 +21,16 @@ class Magneto_Varnish_Model_Observer {
         }
 
         if ($helper->quoteHasItems()) {
-            Mage::log('Items in cart condition');
             $helper->turnOffVarnishCache();
             return false;
         } else {
-            Mage::log('empty cart');
             $helper->turnOnVarnishCache();
         }
 
         if ($helper->isCustomerLoggedIn()) {
-            Mage::log('custommer logged in');
             $helper->turnOffVarnishCache();
             return false;
-        } else {
-            Mage::log('customer anonym');
-        }
-
-        Mage::log('Request has cache on');
+        } 
 
         $helper->turnOnVarnishCache();
     }
