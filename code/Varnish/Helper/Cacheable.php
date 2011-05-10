@@ -23,7 +23,7 @@ class Magneto_Varnish_Helper_Cacheable extends Mage_Core_Helper_Abstract
     }
 
     public function turnOffVarnishCache()
-    {
+    {   
         $this->getCookie()->set('nocache', 1);
     }
 

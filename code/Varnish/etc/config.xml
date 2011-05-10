@@ -56,6 +56,17 @@
                     </varnish>
                 </observers>
             </application_clean_cache>
+            <!-- To check if category is in navigation to let admin users know that varnish cache needs 
+            to be revalidated -->
+            <catalog_category_save_commit_after>
+                <observers>
+                    <varnish>
+                        <type>singleton</type>
+                        <class>varnish/observer</class>
+                        <method>onCategorySave</method>
+                    </varnish>
+                </observers>
+            </catalog_category_save_commit_after>
         </events>
     </global>
 

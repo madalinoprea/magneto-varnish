@@ -43,6 +43,22 @@ class Magneto_Varnish_Model_Observer {
 
         $helper->turnOnVarnishCache();
     }
+    
+    /**
+     * @see Mage_Core_Model_Cache
+     * 
+     * @param Mage_Core_Model_Observer $observer 
+     */
+    public function onCategorySave($observer)
+    {
+        $category = $observer->getCategory(); /* @var $category Mage_Catalog_Model_Category */
+        if ($category->getData('include_in_menu')) {
+            // notify user that varnish needs to be refreshed
+            Mage::app()->getCacheInstance()->invalidateType(array('varnish'));
+        }
+        
+        return $this;
+    }
 
     /**
      * Listens to application_clean_cache event and gets notified when a product/category/cms 
