@@ -1,18 +1,20 @@
-
 Under Development
+================================
+Implements ideas posted on http://moprea.ro/2011/feb/16/magento-performance-optimization-varnish-cache-2/ and http://www.kalenyuk.com.ua/magento-performance-optimization-with-varnish-cache-47.html.
+
 
 ================================
-Installation instructions
+Instalation instructions
 
-1. Make sure you have modman installed
+1. Make sure you have modman installed:
 curl http://module-manager.googlecode.com/files/modman-1.1.5 > modman
 chmod +x modman
 sudo mv modman /usr/bin
 
-2. Clone the git repository
+2. Clone the git repository:
 cd [magento root folder]
 modman init
-modman magneto-varnish clone git@github.com:madalinoprea/magneto-varnish.git
+modman magneto-varnish clone https://github.com/madalinoprea/magneto-varnish.git
 
 3. Flush Magento cache to enable the extension
 
