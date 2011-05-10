@@ -7,7 +7,6 @@
  backend default {
      .host = "127.0.0.1";
      .port = "81"; # READ THIS: You should configure Apache to run on port 81
-     .max_connections = 30;
  }
 
 acl trusted {
