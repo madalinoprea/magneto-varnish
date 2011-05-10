@@ -3,6 +3,9 @@
 class Magneto_Varnish_Model_Observer {
 
     /**
+     * This method is called when http_response_send_before event is triggered to identify
+     * if current page can be cached and set correct cookies for varnish.
+     * 
      * @param $observer Varien_Event_Observer
      */
     public function varnish(Varien_Event_Observer $observer)
@@ -10,6 +13,12 @@ class Magneto_Varnish_Model_Observer {
         $event = $observer->getEvent();
         $response = $observer->getResponse();
         $helper = Mage::helper('varnish/cacheable'); /* @var $helper Magneto_Varnish_Model_Cacheable */
+
+        // Cache disabled in Admin / System / Cache Management
+        if( !Mage::app()->useCache('varnish') ){
+            $helper->turnOffVarnishCache();
+            return false;
+        }
 
         if( $helper->isNoCacheStable() ){
             return false;
@@ -43,23 +52,25 @@ class Magneto_Varnish_Model_Observer {
      */
     public function purgeCache($observer)
     {
+        // If Varnish is not enabled on admin don't do anything
+        if (!Mage::app()->useCache('varnish')) {
+            return;
+        }
+        
         $tags = $observer->getTags();
         $urls = array();
-        Mage::log("Tags: " . get_class($tags) . ' = ' . var_export($tags, true));
-				
-		if($tags == array())
-		{
+//        Mage::log("Tags: " . get_class($tags) . ' = ' . var_export($tags, true));
+
+        if ($tags == array()) {
             $errors = Mage::helper('varnish')->purgeAll();
             if (!empty($errors)) {
-                Mage::getSingleton('adminhtml/session')->addError(
-                    "Varnish Purge failed");
+                Mage::getSingleton('adminhtml/session')->addError("Varnish Purge failed");
             } else {
-                Mage::getSingleton('adminhtml/session')->addSuccess(
-                    "The Varnish cache storage has been flushed.");
+                Mage::getSingleton('adminhtml/session')->addSuccess("The Varnish cache storage has been flushed.");
             }
-			return;
-		}
-		
+            return;
+        }
+
         // compute the urls for affected entities 
         foreach ((array)$tags as $tag) {
             //catalog_product_100 or catalog_category_186

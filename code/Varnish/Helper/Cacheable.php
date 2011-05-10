@@ -3,6 +3,11 @@
 class Magneto_Varnish_Helper_Cacheable extends Mage_Core_Helper_Abstract
 {
 
+    /**
+     * Retrieves current cookie.
+     * 
+     * @return Mage_Core_Model_Cookie
+     */
     public function getCookie()
     {
         return Mage::app()->getCookie();
@@ -24,7 +29,10 @@ class Magneto_Varnish_Helper_Cacheable extends Mage_Core_Helper_Abstract
 
     public function turnOnVarnishCache()
     {
-        $this->getCookie()->delete('nocache');
+        if ($this->getCookie()->get('nocache'))
+        {
+            $this->getCookie()->delete('nocache');
+        }
     }
 
     public function quoteHasItems()

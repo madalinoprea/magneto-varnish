@@ -3,11 +3,15 @@
 class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
-    // FIXME: Make use of this option
-    //public function isModuleEnabled(){
-    //    return Mage::getStoreConfig('varnish/options/enable_purges');
-    //}
+    public function useVarnishCache(){
+        Mage::app()->useCache('varnish');
+    }
 
+    /**
+     * Return varnish servers from configuration
+     * 
+     * @return array 
+     */
     public function getVarnishServers()
     {
         $serverConfig = Mage::getStoreConfig('varnish/options/servers');
@@ -24,24 +28,11 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
         return $this->purge(array('/.*'));
     }
 
-    public function purgeUrl($url, $varnishServer, $varnishPort){
-        $fp = fsockopen($varnishServer, $varnishPort, $errno, $errstr, 2);
-        if(!$fp){
-            Mage::log("{$errstr} {$errno}");
-        } else {
-            $out = "PURGE " . $url . " . HTTP/1.0\r\n";
-            $out .= "Host: magento-community.local\r\n";
-            $out .= "Connection: Close\r\n\r\n";
-
-            fwrite($fp, $out);
-            while(!feof($fp)){
-                Mage::log( fgets($fp, 128));
-            }
-            fclose($fp);
-            Mage::getBaseHost();
-        }
-    }
-
+    /**
+     * Purge an array of urls on all varnish servers.
+     * 
+     * @param array $urls 
+     */
     public function purge(array $urls)
     {
         $varnishServers = $this->getVarnishServers();
@@ -53,9 +44,6 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
         
         foreach ((array)$varnishServers as $varnishServer) {
             foreach ($urls as $url) {
-                //$this->purgeUrl($url, $varnishServer);
-                //continue; // debuggign stuff
-
                 $varnishUrl = "http://" . $varnishServer . $url;
 
                 $ch = curl_init();
@@ -73,6 +61,8 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
         do {
             $n = curl_multi_exec($mh, $active);
         } while ($active);
+        
+        // FIXME: Add error handling 
 
         // Clean up
         foreach ($curlHandlers as $ch) {

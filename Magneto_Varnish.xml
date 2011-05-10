@@ -4,6 +4,9 @@
         <Magneto_Varnish>
             <active>true</active>
             <codePool>community</codePool>
+            <depends>
+                <Mage_Adminhtml />
+            </depends>
         </Magneto_Varnish>
     </modules>
 </config> 

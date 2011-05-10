@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Magneto_Varnish>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </Magneto_Varnish>
     </modules>
     <frontend>
@@ -28,13 +28,15 @@
                 <class>Magneto_Varnish_Helper</class>
             </varnish>
         </helpers>
-        <!-- index>
-            <indexer>
-                <varnish_pagecache>
-                    <model>varnish/indexer_pagecache</model>
-                </varnish_pagecache>
-            </indexer>
-        </index -->
+        <cache>
+            <types>
+                <varnish translate="label,description" module="varnish">
+                    <label>Varnish</label>
+                    <description>Full page cache in Varnish</description>
+                    <tags></tags>
+                </varnish>
+            </types>
+        </cache>
         <events>
             <http_response_send_before>
                 <observers>
@@ -57,6 +59,18 @@
         </events>
     </global>
 
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <varnish before="Mage_Adminhtml">Magneto_Varnish</varnish>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+
     <default>
         <varnish>
             <options>
@@ -66,7 +80,6 @@
             </options>
         </varnish>
     </default>
-
 
     <adminhtml>
         <acl>
