@@ -74,9 +74,7 @@
     <default>
         <varnish>
             <options>
-                <servers>
-                    <server1>magento-community.local</server1>
-                </servers>
+                <servers>127.0.0.1:80</servers>
             </options>
         </varnish>
     </default>

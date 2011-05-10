@@ -16,8 +16,9 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $serverConfig = Mage::getStoreConfig('varnish/options/servers');
         $varnishServers = array();
-        foreach ($serverConfig as $value) {
-            $varnishServers[] = $value;
+        
+        foreach (explode(',', $serverConfig) as $value ) {
+            $varnishServers[] = trim($value);
         }
 
         return $varnishServers;
