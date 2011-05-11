@@ -3,8 +3,13 @@
 class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
+    /**
+     * Check if varnish is enabled in Cache management.
+     * 
+     * @return boolean  True if varnish is enable din Cache management. 
+     */
     public function useVarnishCache(){
-        Mage::app()->useCache('varnish');
+        return Mage::app()->useCache('varnish');
     }
 
     /**
@@ -24,6 +29,11 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
         return $varnishServers;
     }
 
+    /**
+     * Purges all cache on all Varnish servers.
+     * 
+     * @return array errors if any
+     */
     public function purgeAll()
     {
         return $this->purge(array('/.*'));
@@ -32,7 +42,8 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Purge an array of urls on all varnish servers.
      * 
-     * @param array $urls 
+     * @param array $urls
+     * @return array with all errors 
      */
     public function purge(array $urls)
     {
@@ -63,31 +74,21 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
             $n = curl_multi_exec($mh, $active);
         } while ($active);
         
-        // FIXME: Add error handling 
-
-        // Clean up
+        // Error handling and clean up
         foreach ($curlHandlers as $ch) {
+            $info = curl_getinfo($ch);
+            
+            if (curl_errno($ch)) {
+                $errors[] = "Cannot purge url {$info['url']} due to error" . curl_error($ch);
+            } else if ($info['http_code'] != 200 && $info['http_code'] != 404) {
+                $errors[] = "Cannot purge url {$info['url']}, http code: {$info['http_code']}";
+            }
+            
             curl_multi_remove_handle($mh, $ch);
             curl_close($ch);
         }
         curl_multi_close($mh);
-
-        /*
-                    // curl error handling
-                    if (curl_errno($ch)){
-                        $errors[] = "Cannot purge url {$varnishUrl} due to error {curl_error($ch)}";
-                    } else {
-                        $info = curl_getinfo($ch);
-                        if ($info['http_code']!=200 && $info['http_code']!=404) {
-                            $errors[] = "Cannot purge url {$varnishUrl}, http code: {$info['http_code']}";
-                            Mage::log("Varnish: cannot purge url {$varnishUrl}, http code: {$info['http_code']}");
-                        }
-                    }
-                }
-                catch(Exception $e) {
-                    Mage::log('Curl exception ' . $e->getFile(). ' ' . $e->getLine() . ' ' . $e->getMessage());
-                }
-            }
-        } */
+        
+        return $errors;
     }
 }

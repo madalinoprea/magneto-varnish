@@ -75,7 +75,6 @@ class Magneto_Varnish_Model_Observer {
         
         $tags = $observer->getTags();
         $urls = array();
-//        Mage::log("Tags: " . get_class($tags) . ' = ' . var_export($tags, true));
 
         if ($tags == array()) {
             $errors = Mage::helper('varnish')->purgeAll();
@@ -121,7 +120,7 @@ class Magneto_Varnish_Model_Observer {
             $errors = Mage::helper('varnish')->purge($relativeUrls);
             if (!empty($errors)) {
                 Mage::getSingleton('adminhtml/session')->addError(
-                    "Some Varnish purges failed: <br/>" . implode("<br/>", $relativeUrls));
+                    "Some Varnish purges failed: <br/>" . implode("<br/>", $errors));
             } else {
                 Mage::getSingleton('adminhtml/session')->addSuccess(
                     "Purges have been submitted successfully: <br/>" . implode("<br/>", $relativeUrls));
