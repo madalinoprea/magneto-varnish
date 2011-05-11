@@ -21,9 +21,11 @@ Screen shots: [https://github.com/madalinoprea/magneto-varnish/wiki/Screenshots]
 ## Instalation instructions
 
 1. Make sure you have modman installed:
+<pre><code>
 curl http://module-manager.googlecode.com/files/modman-1.1.5 > modman
 chmod +x modman
 sudo mv modman /usr/bin
+</pre></code>
 
 1. Clone the git repository:
 <pre><code>
@@ -31,6 +33,9 @@ cd [magento root folder]
 modman init
 modman magneto-varnish clone https://github.com/madalinoprea/magneto-varnish.git
 </code></pre>
+
+In case you get an error that git is not found, you'll have to install git and rerun the last command. This can be done like this on Ubuntu:
+`sudo aptitude install git-core`
 
 1. Flush Magento cache to enable the extension
 
