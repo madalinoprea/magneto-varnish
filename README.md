@@ -15,7 +15,7 @@ be updated for all pages.
 1. Turns off varnish cache automatically for users that have products in the cart or are logged in, etc.)
 1. Default varnish configuration offered so that the module is workable.
 
-Screen shots: [https://github.com/madalinoprea/magneto-varnish/wiki/Screenshots](https://github.com/madalinoprea/magneto-varnish/wiki/Screenshots)
+Screen shots: [https://github.com/madalinoprea/magneto-varnish/wiki](https://github.com/madalinoprea/magneto-varnish/wiki)
 
 
 ## Instalation instructions
