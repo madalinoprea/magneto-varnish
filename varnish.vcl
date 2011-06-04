@@ -54,7 +54,7 @@ sub vcl_recv {
          return (pass);
      }
 
-    # parse accept encoding rulesets to normalize0
+    # parse accept encoding rulesets to normalize
     if (req.http.Accept-Encoding) {
         if (req.http.Accept-Encoding ~ "gzip") {
             set req.http.Accept-Encoding = "gzip";
@@ -76,12 +76,12 @@ sub vcl_recv {
 
     # Don't cache pages for Magento Admin
     # FIXME: change this rule if you use custom url in admin
-    if (req.url ~ "^/admin" || req.url ~ "^/index.php/admin") {
+    if (req.url ~ "^/(index.php/)?admin") {
         return(pass);
     }
 
-    # Don't cache checkout/customer pages
-    if (req.url ~ "^/checkout" || req.url ~ "^/customer") {
+    # Don't cache checkout/customer pages, product compare
+    if (req.url ~ "^/(index.php/)?(checkout|customer|catalog/product_compare|wishlist)") {
         return(pass);
     }
 

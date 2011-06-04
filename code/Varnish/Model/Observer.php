@@ -11,7 +11,6 @@ class Magneto_Varnish_Model_Observer {
     public function varnish(Varien_Event_Observer $observer)
     {
         $event = $observer->getEvent();
-        $response = $observer->getResponse();
         $helper = Mage::helper('varnish/cacheable'); /* @var $helper Magneto_Varnish_Model_Cacheable */
 
         // Cache disabled in Admin / System / Cache Management
@@ -29,17 +28,14 @@ class Magneto_Varnish_Model_Observer {
             return false;
         }
 
-        if ($helper->quoteHasItems()) {
+        
+        if ($helper->quoteHasItems() || $helper->isCustomerLoggedIn() || $helper->hasCompareItems()) {
             $helper->turnOffVarnishCache();
+
             return false;
         } else {
             $helper->turnOnVarnishCache();
         }
-
-        if ($helper->isCustomerLoggedIn()) {
-            $helper->turnOffVarnishCache();
-            return false;
-        } 
 
         $helper->turnOnVarnishCache();
     }

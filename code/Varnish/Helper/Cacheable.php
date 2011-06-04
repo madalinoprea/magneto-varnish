@@ -42,6 +42,12 @@ class Magneto_Varnish_Helper_Cacheable extends Mage_Core_Helper_Abstract
         return $quote instanceof Mage_Sales_Model_Quote && $quote->hasItems();
     }
 
+    public function hasCompareItems()
+    {
+        // see Mage_Catalog_Helper_Product_Compare
+        return Mage::helper('catalog/product_compare')->getItemCount() > 0;
+    }
+
     public function isCustomerLoggedIn()
     {
         $customerSession = Mage::getSingleton('customer/session');
