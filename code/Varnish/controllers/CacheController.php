@@ -11,7 +11,7 @@ class Magneto_Varnish_CacheController extends Mage_Adminhtml_CacheController {
         $types = $this->getRequest()->getParam('types');
         
         if (Mage::app()->useCache('varnish') ) {
-            if( (is_array($types) && in_array('varnish', $types)) || $types="varnish") { 
+            if( (is_array($types) && in_array('varnish', $types)) || $types == "varnish") { 
                 Mage::helper('varnish')->purgeAll();
                 $this->_getSession()->addSuccess(Mage::helper('adminhtml')->__("Varnish cache type purged ."));
             }
