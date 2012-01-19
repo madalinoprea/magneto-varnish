@@ -36,7 +36,15 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function purgeAll()
     {
-        return $this->purge(array('/.*'));
+	$collection = Mage::getModel("core/store")->getCollection();
+	$urls = Array();
+
+	# TODO - FIXME - We need to uniq the resulting URLs. We've seen applications that have the same store URL multiple times. This is inefficient.
+	foreach ($collection as $store) {
+		$urls[] = $store->getBaseUrl() . "/.*";
+	}
+
+	$this->purge($urls);
     }
 
     /**
