@@ -55,13 +55,23 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
         $mh = curl_multi_init();
         
         foreach ((array)$varnishServers as $varnishServer) {
-            foreach ($urls as $url) {
-                $varnishUrl = "http://" . $varnishServer . $url;
+	    foreach ($urls as $url) {
+		$urlpath = parse_url($url, PHP_URL_PATH);
+		$urlhost = parse_url($url, PHP_URL_HOST);
+
+                $varnishUrl = "http://" . $varnishServer . $urlpath;
 
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $varnishUrl);
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PURGE');
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, FALSE);
+
+		if ($urlhost) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Host: $urlhost"));
+		}
+
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 
