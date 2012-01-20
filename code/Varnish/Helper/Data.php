@@ -41,7 +41,10 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
 
 	# TODO - FIXME - We need to uniq the resulting URLs. We've seen applications that have the same store URL multiple times. This is inefficient.
 	foreach ($collection as $store) {
-		$urls[] = $store->getBaseUrl() . "/.*";
+		$urls[] = $store->getBaseUrl() . ".*";
+
+		# Sometimes we see multiple storefronts with the same frontend URL. We do not need to flush those URLs twice. So uniq and sort.
+		$urls = array_values(array_unique($urls));
 	}
 
 	$this->purge($urls);
