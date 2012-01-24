@@ -28,8 +28,7 @@ class Magneto_Varnish_Model_Observer {
             return false;
         }
 
-        
-        if ($helper->quoteHasItems() || $helper->isCustomerLoggedIn() || $helper->hasCompareItems()) {
+        if ($helper->quoteHasItems() || $helper->isCustomerLoggedIn() || $helper->isAdminArea() || $helper->hasCompareItems()) {
             $helper->turnOffVarnishCache();
 
             return false;

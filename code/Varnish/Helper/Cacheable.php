@@ -35,6 +35,19 @@ class Magneto_Varnish_Helper_Cacheable extends Mage_Core_Helper_Abstract
         }
     }
 
+    public function isAdminArea()
+    {
+	// http://freegento.com/doc/dd/dc2/class_mage___core___model___design___package.html
+	// http://freegento.com/doc/dc/d33/class_mage___core___model___app___area.html
+	//
+	// If we are in the admin area of Magento (irrespective of URL), return false
+	//
+
+	$design = Mage::getSingleton('core/design_package');
+
+	return $design instanceof Mage_Core_Model_Design_Package && $design->getArea() == "adminhtml";
+    }
+
     public function quoteHasItems()
     {
         $quote = Mage::getSingleton('checkout/session')->getQuote();
