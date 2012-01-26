@@ -35,6 +35,11 @@ class Magneto_Varnish_Helper_Cacheable extends Mage_Core_Helper_Abstract
         }
     }
 
+    public function passCookie()
+    {
+	$this->getCookie()->set('nocache_once', 1);	
+    }
+
     public function isAdminArea()
     {
 	// http://freegento.com/doc/dd/dc2/class_mage___core___model___design___package.html
@@ -59,6 +64,13 @@ class Magneto_Varnish_Helper_Cacheable extends Mage_Core_Helper_Abstract
     {
         // see Mage_Catalog_Helper_Product_Compare
         return Mage::helper('catalog/product_compare')->getItemCount() > 0;
+    }
+
+    public function isAdminLoggedIn()
+    {
+        $adminSession = Mage::getSingleton('admin/session');
+
+        return $adminSession instanceof Mage_Admin_Model_Session && $adminSession->isLoggedIn();
     }
 
     public function isCustomerLoggedIn()

@@ -19,24 +19,29 @@ class Magneto_Varnish_Model_Observer {
             return false;
         }
 
-        if( $helper->isNoCacheStable() ){
+	elseif( $helper->isNoCacheStable() ){
             return false;
         }
 
-        if ($helper->pollVerification()) {
+	elseif ($helper->pollVerification()) {
             $helper->setNoCacheStable();
             return false;
         }
 
-        if ($helper->quoteHasItems() || $helper->isCustomerLoggedIn() || $helper->isAdminArea() || $helper->hasCompareItems()) {
+	elseif ($helper->quoteHasItems() || $helper->isCustomerLoggedIn() || $helper->isAdminLoggedIn() || $helper->hasCompareItems()) {
             $helper->turnOffVarnishCache();
 
             return false;
-        } else {
-            $helper->turnOnVarnishCache();
-        }
+	}
 
-        $helper->turnOnVarnishCache();
+	// Certain pages need to pass through the cache, but do not need a session.
+	// For example: /admin/. At logout, this page needs to be able to unset nocache.
+	if ($helper->isAdminArea()) {
+		$helper->passCookie();
+	}
+
+	$helper->turnOnVarnishCache();
+	return false;
     }
     
     /**
