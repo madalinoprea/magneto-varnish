@@ -64,6 +64,9 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
         // Init curl handler
         $curlHandlers = array(); // keep references for clean up
         $mh = curl_multi_init();
+
+	// Uniq the URL's so we don't flood the console with duplicate URLs
+	$urls = array_values(array_unique($urls));
         
         foreach ((array)$varnishServers as $varnishServer) {
 	    foreach ($urls as $url) {
