@@ -24,8 +24,15 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[Specify URLs that you don't want cached.<br/><br/>- Enter each on it's own line.<br/>- You can specify regular expressions.<br/>- You can specify multiple URLs to match.<br/>- Please do not use ! in patterns.<br/>- Patterns match path component of the URL only.<br/><br/>
-                            Example: /(index.php)?/admin/]]></comment>
+                            <comment><![CDATA[Specify URLs that you don't want cached.<br/>
+<br/>
+- Enter each pattern on it's own line.<br/>
+- You can specify <a href="http://www.php.net/manual/en/reference.pcre.pattern.syntax.php">regular expressions</a>.<br/>
+- Please do not use ! in patterns.<br/>
+- Patterns match <a href="http://nl2.php.net/manual/en/function.parse-url.php">path component</a> of the URL only.<br/>
+- Flush cache to expunge existing cache objects.</br>
+<br/>
+Example: /(index.php)?/admin/]]></comment>
                         </exclude>
                     </fields>
                 </excludes>
