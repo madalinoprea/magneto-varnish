@@ -9,7 +9,7 @@
             <show_in_store>1</show_in_store>
 
             <groups>
-                <options translate="label">
+                <server_options translate="label">
                     <label>Varnish options</label>
                     <sort_order>1</sort_order>
                     <show_in_default>1</show_in_default>
@@ -28,7 +28,7 @@
                             You can specify multiple varnish servers separating them by comma: 127.0.0.1:80,127.0.0.2:80]]></comment>
                         </servers>
                     </fields>
-                </options>
+                </server_options>
             </groups>
         </varnish>
     </sections>
