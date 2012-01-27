@@ -84,9 +84,9 @@
 
     <default>
         <varnish>
-            <options>
+            <server_options>
                 <servers>127.0.0.1:80</servers>
-            </options>
+            </server_options>
         </varnish>
     </default>
 
