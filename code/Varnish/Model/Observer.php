@@ -34,12 +34,21 @@ class Magneto_Varnish_Model_Observer {
             return false;
 	}
 
+	// Certain pages are whitelisted. They need to pass once without starting a nocache session
+	if ($helper->isExcludedPage()) {
+		$helper->passThisPage();
+		return false;
+	}
+
+
 	// Certain pages need to pass through the cache, but do not need a session.
 	// For example: /admin/. At logout, this page needs to be able to unset nocache.
 	if ($helper->isAdminArea()) {
-		$helper->passCookie();
+		$helper->passThisPage();
+		return false;
 	}
 
+	// The session has ended, turn the Varnish cache back on
 	$helper->turnOnVarnishCache();
 	return false;
     }

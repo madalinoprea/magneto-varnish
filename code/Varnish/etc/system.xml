@@ -9,9 +9,29 @@
             <show_in_store>1</show_in_store>
 
             <groups>
-                <server_options translate="label">
-                    <label>Varnish options</label>
+                <excludes translate="label">
+                    <label>Exclude urls</label>
                     <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <expanded>1</expanded>
+                    <fields>
+                        <exclude>
+                            <label>Excluded URLs</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Specify URLs that you don't want cached.<br/><br/>- Enter each on it's own line.<br/>- You can specify regular expressions.<br/>- You can specify multiple URLs to match.<br/>- Please do not use ! in patterns.<br/>- Patterns match path component of the URL only.<br/><br/>
+                            Example: /(index.php)?/admin/]]></comment>
+                        </exclude>
+                    </fields>
+                </excludes>
+                <server_options translate="label">
+                    <label>Varnish server options</label>
+                    <sort_order>2</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>

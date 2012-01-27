@@ -35,7 +35,7 @@ class Magneto_Varnish_Helper_Cacheable extends Mage_Core_Helper_Abstract
         }
     }
 
-    public function passCookie()
+    public function passThisPage()
     {
 	$this->getCookie()->set('nocache_once', 1);	
     }
@@ -79,6 +79,24 @@ class Magneto_Varnish_Helper_Cacheable extends Mage_Core_Helper_Abstract
 
         return $customerSession instanceof Mage_Customer_Model_Session && $customerSession->isLoggedIn();
     }
+
+	public function isExcludedPage()
+	{
+		$helper     = Mage::helper('varnish/data');
+		$excluded   = $helper->getExcludedURLs();
+		$currentURL = parse_url(Mage::helper('core/url')->getCurrentURL(), PHP_URL_PATH);
+
+		foreach ($excluded as $pattern) {
+			if(preg_match("!$pattern!", $currentURL)) {
+				return true;
+			}
+		}
+
+		// not matched, not excluded
+		return false;
+	}
+
+			
 
     public function pollVerification()
     {

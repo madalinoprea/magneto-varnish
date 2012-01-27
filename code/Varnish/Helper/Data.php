@@ -13,6 +13,28 @@ class Magneto_Varnish_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Return excluded URLs from configuration
+     *
+     * @return array
+     */
+
+	public function getExcludedURLs()
+	{
+		$excludeConfig = Mage::getStoreConfig('varnish/excludes/exclude');
+		$excludeURLs   = array();
+
+		foreach (explode("\n", $excludeConfig) as $value) {
+
+			// Ensure that is not an empty line
+			if (preg_match('/\S/', $value)) {
+				$excludeURLs[] = trim($value);
+			}
+		}
+
+		return $excludeURLs;
+	}
+
+    /**
      * Return varnish servers from configuration
      * 
      * @return array 
