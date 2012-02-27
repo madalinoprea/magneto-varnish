@@ -39,6 +39,14 @@ In case you get an error that git is not found, you'll have to install git and r
 
 1. Flush Magento cache to enable the extension
 
+## Uninstall
+Delete project checked under modman folder and clean created symlinks.
+<pre>
+cd [magento root folder]
+rm -rf .modman/magneto-varnish
+modman clean
+</pre>
+
 ## Requirements
 
 1. Apache started and listening on port 81 (Varnish configuration is using this port)
