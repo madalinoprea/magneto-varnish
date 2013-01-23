@@ -134,11 +134,12 @@ class Magneto_Varnish_Model_Observer {
         $urls = array();
 
         $store_id = $product->getStoreId();
+        $defaultStoreId = Mage::app()->getWebsite(true)->getDefaultGroup()->getDefaultStore()->getStoreId();
 
         $routePath = 'catalog/product/view';
         $routeParams['id']  = $product->getId();
         $routeParams['s']   = $product->getUrlKey();
-        $routeParams['_store'] = (!$store_id ? 1: $store_id);
+        $routeParams['_store'] = (!$store_id ? $defaultStoreId: $store_id); # Use Default Store ID if Store ID not set.
         $url = Mage::getUrl($routePath, $routeParams);
         $urls[] = $url;
 
@@ -173,9 +174,11 @@ class Magneto_Varnish_Model_Observer {
         $routePath = 'catalog/category/view';
 
         $store_id = $category->getStoreId();
+        $defaultStoreId = Mage::app()->getWebsite(true)->getDefaultGroup()->getDefaultStore()->getStoreId();
+        
         $routeParams['id']  = $category->getId();
         $routeParams['s']   = $category->getUrlKey();
-        $routeParams['_store'] = (!$store_id ? 1 : $store_id); # Default store id is 1
+        $routeParams['_store'] = (!$store_id ? $defaultStoreId : $store_id); # Use Default Store ID if Store ID not set.
         $url = Mage::getUrl($routePath, $routeParams);
         $urls[] = $url;
 
